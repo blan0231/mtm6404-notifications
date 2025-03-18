@@ -1,32 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
 import './App.css'
+import notifications from './notifications';  // Import notification data
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Initialize the notifications state with the data from notifications.js
+  const [notificationsList, setNotificationsList] = useState(notifications)
+
+  // Handle clearing a single notification
+  const clearNotification = (id) => {
+    setNotificationsList(notificationsList.filter(notification => notification.id !== id))
+  }
+
+  // Handle clearing all notifications
+  const clearAllNotifications = () => {
+    setNotificationsList([])
+  }
+
+  // Calculate the count of notifications
+  const notificationCount = notificationsList.length
+
+  useEffect(() => {
+    console.log(`Notification count is now: ${notificationCount}`);
+  }, [notificationCount])
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="app">
+      <h1>Notifications</h1>
+      
+      {/* Display the total number of notifications */}
+      <p>{notificationCount} notifications</p>
+
+      {/* Render the list of notifications */}
+      <ul>
+        {notificationsList.map(notification => (
+          <li key={notification.id}>
+            <p><strong>{notification.name}:</strong> {notification.message}</p>
+            <button onClick={() => clearNotification(notification.id)}>Clear</button>
+          </li>
+        ))}
+      </ul>
+
+      {/* Button to clear all notifications */}
+      <button onClick={clearAllNotifications} disabled={notificationCount === 0}>
+        Clear All Notifications
+      </button>
     </div>
   )
 }
